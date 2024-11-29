@@ -35,15 +35,6 @@ const departments = ['Development', 'Marketing', 'Sales', 'Support'];
     MatIconModule,
   ],
   providers: [provideNativeDateAdapter()],
-  template: `<form [formGroup]="teamForm">
-    <mat-form-field>
-      <mat-label>Team Name</mat-label>
-      <input matInput placeholder="Team Name" [formControl]="teamNameControl" />
-      @if (teamNameControl.hasError('required')) {
-        <mat-error> Team Name is required </mat-error>
-      }
-    </mat-form-field>
-  </form> `,
   templateUrl: './reactive-form.component.html',
   styleUrl: './reactive-form.component.scss',
 })
