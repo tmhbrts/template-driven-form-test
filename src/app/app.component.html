@@ -1,12 +1,16 @@
-<nav mat-tab-nav-bar [tabPanel]="tabPanel">
-  @for (link of tabLinks; track link){
-  <a
-    mat-tab-link
-    [routerLink]="[link.path]"
-    [active]="getCurrentSubroute() === link.path"
-  >
-    {{ link.label }}
-  </a>
+<nav class="nav-bar" mat-tab-nav-bar [tabPanel]="tabPanel">
+  @for (link of tabLinks; track link) {
+    <a
+      mat-tab-link
+      [routerLink]="[link.path]"
+      [active]="getCurrentSubroute() === link.path"
+    >
+      {{ link.label }}
+    </a>
   }
 </nav>
-<mat-tab-nav-panel #tabPanel><router-outlet></router-outlet></mat-tab-nav-panel>
+<mat-tab-nav-panel #tabPanel>
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+</mat-tab-nav-panel>

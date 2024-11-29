@@ -1,0 +1,31 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &__member-entry {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  &__btn-submit {
+    align-self: flex-start;
+  }
+}
+
+fieldset {
+  border-radius: 4px;
+  margin-top: 1em;
+
+  legend {
+    font-size: 0.75rem;
+    letter-spacing: 0.02rem;
+  }
+}
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 4rem;
+}

@@ -1,1 +1,94 @@
-<p>reactive-form works!</p>
+<form class="form" [formGroup]="teamForm">
+  <mat-form-field>
+    <mat-label>Team Name</mat-label>
+    <input matInput placeholder="Team Name" [formControl]="teamNameControl" />
+    @if (teamNameControl.hasError("required")) {
+      <mat-error> Team Name is required </mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Department</mat-label>
+    <mat-select [formControl]="departmentControl">
+      @for (department of departments; track department) {
+        <mat-option [value]="department">
+          {{ department }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Contract Period</mat-label>
+    <mat-date-range-input [formGroup]="teamForm" [rangePicker]="picker">
+      <input
+        matStartDate
+        [formControl]="contractPeriodStartControl"
+        placeholder="Start date"
+      />
+      <input
+        matEndDate
+        [formControl]="contractPeriodEndControl"
+        placeholder="End date"
+      />
+    </mat-date-range-input>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  </mat-form-field>
+
+  <fieldset>
+    <legend>Required Equipment</legend>
+    <mat-selection-list
+      class="selection-grid"
+      [formControl]="requiredEquipmentControl"
+    >
+      @for (option of equipmentOptions; track option) {
+        <mat-list-option>{{ option }}</mat-list-option>
+      }
+    </mat-selection-list>
+  </fieldset>
+
+  <fieldset>
+    <legend>Team Members</legend>
+    <button mat-button (click)="addTeamMember()">
+      Add Team Member <mat-icon>add</mat-icon>
+    </button>
+    <div formArrayName="members">
+      @for (member of membersControl.controls; track member; let i = $index) {
+        <div
+          class="form__member-entry"
+          [formGroup]="membersControl.controls[i]"
+        >
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" />
+            @if (
+              membersControl.controls[i].controls.name.hasError("required")
+            ) {
+              <mat-error> Name is required </mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Age</mat-label>
+            <input matInput type="number" formControlName="age" />
+            @if (membersControl.controls[i].controls.age.hasError("required")) {
+              <mat-error> Age is required </mat-error>
+            }
+            @if (membersControl.controls[i].controls.age.hasError("min")) {
+              <mat-error> Age not valid </mat-error>
+            }
+          </mat-form-field>
+        </div>
+      }
+    </div>
+  </fieldset>
+  <button
+    class="form__btn-submit"
+    mat-flat-button
+    type="submit"
+    (click)="submitForm()"
+  >
+    Submit Team
+  </button>
+</form>
