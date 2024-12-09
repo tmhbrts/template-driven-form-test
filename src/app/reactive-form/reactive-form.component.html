@@ -16,6 +16,9 @@
         </mat-option>
       }
     </mat-select>
+    @if (departmentControl.hasError("required")) {
+      <mat-error> Department is required </mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field>
@@ -39,21 +42,33 @@
 
   <fieldset>
     <legend>Required Equipment</legend>
+    <mat-slide-toggle [formControl]="defaultEquipementOnlyControl"
+      >Default Equipment Only</mat-slide-toggle
+    >
     <mat-selection-list
       class="selection-grid"
       [formControl]="requiredEquipmentControl"
+      [disabled]="(defaultEquipmentOnly$ | async) ?? false"
     >
       @for (option of equipmentOptions; track option) {
-        <mat-list-option>{{ option }}</mat-list-option>
+        <mat-list-option [value]="option">{{ option }}</mat-list-option>
       }
     </mat-selection-list>
   </fieldset>
 
-  <fieldset>
+  <fieldset [disabled]="teamMemberSyncStatus$ | async">
     <legend>Team Members</legend>
-    <button mat-button (click)="addTeamMember()">
-      Add Team Member <mat-icon>add</mat-icon>
-    </button>
+
+    <div class="btn-group">
+      <button type="button" mat-button (click)="addTeamMember()">
+        Add Team Member <mat-icon>add</mat-icon>
+      </button>
+      <button type="button" mat-button (click)="teamMemberSyncRequest$.next()">
+        {{ (teamMemberSyncStatus$ | async) ? "Syncing..." : "Sync Team Members"
+        }}<mat-icon>sync</mat-icon>
+      </button>
+    </div>
+
     <div formArrayName="members">
       @for (member of membersControl.controls; track member; let i = $index) {
         <div
