@@ -1,7 +1,6 @@
 # TemplateDrivenFormTest
 
-Angular 19 project based on `https://github.com/GregOnNet/talk-angular-template-driven-forms`.
-Aim of this project is to compare Reactive forms to an alternative template driven approach.
+Angular 19 project based on [GregOnNet's talk-angular-template-driven-forms](https://github.com/GregOnNet/talk-angular-template-driven-forms). Aim of this project is to compare Reactive forms to an alternative template driven approach.
 
 ## Development server
 
