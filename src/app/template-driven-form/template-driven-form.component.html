@@ -1,76 +1,105 @@
-<form class="form">
-  <mat-form-field>
-    <mat-label>Team Name</mat-label>
-    <input matInput placeholder="Team Name" />
-    @if (false) {
-      <mat-error> Team Name is required </mat-error>
-    }
-  </mat-form-field>
+<form [formSchema]="teamSchema" (formUpdated)="onFormUpdated($event)">
+  <div class="form" ngModelGroup="team">
+    <mat-form-field>
+      <mat-label>Team Name</mat-label>
+      <input
+        matInput
+        placeholder="Team Name"
+        [ngModel]="teamModel().teamName"
+        name="teamName"
+      />
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Department</mat-label>
-    <mat-select>
-      @for (department of departments; track department) {
-        <mat-option [value]="department">
-          {{ department }}
-        </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Contract Period</mat-label>
-    <mat-date-range-input [rangePicker]="picker">
-      <input matStartDate placeholder="Start date" />
-      <input matEndDate placeholder="End date" />
-    </mat-date-range-input>
-    <mat-date-range-picker #picker></mat-date-range-picker>
-    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  </mat-form-field>
-
-  <fieldset>
-    <legend>Required Equipment</legend>
-    <mat-selection-list class="selection-grid">
-      @for (option of equipmentOptions; track option) {
-        <mat-list-option>{{ option }}</mat-list-option>
-      }
-    </mat-selection-list>
-  </fieldset>
-
-  <fieldset>
-    <legend>Team Members</legend>
-    <button mat-button (click)="addTeamMember()">
-      Add Team Member <mat-icon>add</mat-icon>
-    </button>
-    <div>
-      <div class="form__member-entry">
-        <mat-form-field>
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" />
-          @if (false) {
-            <mat-error> Name is required </mat-error>
+    <div form-field-outlet>
+      <mat-form-field>
+        <mat-label>Department</mat-label>
+        <mat-select [ngModel]="teamModel().department" name="department">
+          @for (department of departmentOptions; track department) {
+            <mat-option [value]="department">
+              {{ department }}
+            </mat-option>
           }
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Age</mat-label>
-          <input matInput type="number" formControlName="age" />
-          @if (false) {
-            <mat-error> Age is required </mat-error>
-          }
-          @if (false) {
-            <mat-error> Age not valid </mat-error>
-          }
-        </mat-form-field>
-      </div>
+        </mat-select>
+      </mat-form-field>
     </div>
-  </fieldset>
-  <button
-    class="form__btn-submit"
-    mat-flat-button
-    type="submit"
-    (click)="submitForm()"
-  >
-    Submit Team
-  </button>
+
+    <div form-field-outlet>
+      <mat-form-field>
+        <mat-label>Contract Period</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input
+            [ngModel]="teamModel().contractPeriodStart"
+            name="contractPeriodStart"
+            matStartDate
+            placeholder="Start date"
+          />
+          <input
+            [ngModel]="teamModel().contractPeriodEnd"
+            name="contractPeriodEnd"
+            matEndDate
+            placeholder="End date"
+          />
+        </mat-date-range-input>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+      </mat-form-field>
+    </div>
+
+    <fieldset form-field-outlet>
+      <legend>Required Equipment</legend>
+      <mat-selection-list
+        class="selection-grid"
+        [ngModel]="teamModel().requiredEquipment"
+        name="requiredEquipment"
+      >
+        @for (option of equipmentOptions; track option) {
+          <mat-list-option>{{ option }}</mat-list-option>
+        }
+      </mat-selection-list>
+    </fieldset>
+
+    <fieldset>
+      <legend>Team Members</legend>
+      <button mat-button (click)="addTeamMember()">
+        Add Team Member <mat-icon>add</mat-icon>
+      </button>
+      <div>
+        <div class="form__member-entry">
+          <div form-field-outlet>
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input matInput />
+              @if (false) {
+                <mat-error> Name is required </mat-error>
+              }
+            </mat-form-field>
+          </div>
+          <div field-outlet>
+            <mat-form-field>
+              <mat-label>Age</mat-label>
+              <input matInput type="number" />
+              @if (false) {
+                <mat-error> Age is required </mat-error>
+              }
+              @if (false) {
+                <mat-error> Age not valid </mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <button
+      class="form__btn-submit"
+      mat-flat-button
+      type="submit"
+      (click)="submitForm()"
+    >
+      Submit Team
+    </button>
+  </div>
 </form>
