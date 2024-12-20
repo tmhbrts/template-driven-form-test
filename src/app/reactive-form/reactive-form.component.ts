@@ -55,6 +55,25 @@ export class ReactiveFormComponent {
     Equipment.Mouse,
   ];
 
+  constructor() {
+    this.defaultEquipementOnlyControl.valueChanges
+      .pipe(
+        startWith(false),
+        tap((value) => {
+          if (value) {
+            this.requiredEquipmentControl.setValue(
+              this.defaultEquipementOptions,
+            );
+            this.requiredEquipmentControl.disable();
+            return;
+          }
+
+          this.requiredEquipmentControl.enable();
+        }),
+      )
+      .subscribe();
+  }
+
   equipmentOptions = Object.values(Equipment);
   departments = departments;
 
@@ -86,15 +105,6 @@ export class ReactiveFormComponent {
   defaultEquipementOnlyControl = this.teamForm.controls.defaultEquipmentOnly;
   requiredEquipmentControl = this.teamForm.controls.requiredEquipment;
   membersControl = this.teamForm.controls.members;
-
-  defaultEquipmentOnly$ = this.defaultEquipementOnlyControl.valueChanges.pipe(
-    startWith(false),
-    tap((value) => {
-      if (value) {
-        this.requiredEquipmentControl.setValue(this.defaultEquipementOptions);
-      }
-    }),
-  );
 
   teamMemberSyncRequest$ = new Subject<void>();
 

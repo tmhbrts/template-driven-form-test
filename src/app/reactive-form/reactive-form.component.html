@@ -48,7 +48,6 @@
     <mat-selection-list
       class="selection-grid"
       [formControl]="requiredEquipmentControl"
-      [disabled]="(defaultEquipmentOnly$ | async) ?? false"
     >
       @for (option of equipmentOptions; track option) {
         <mat-list-option [value]="option">{{ option }}</mat-list-option>
