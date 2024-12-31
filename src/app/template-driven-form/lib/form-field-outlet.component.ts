@@ -18,9 +18,9 @@ import { FormSchemaDirective } from './form-schema.directive';
   template: `
     <ng-content></ng-content>
     @if (validationErrorToShow(); as text) {
-      <span class="text-red-500 rounded mb-4 animate-fadein">
+      <div>
         {{ text }}
-      </span>
+      </div>
     }
   `,
 })
@@ -58,7 +58,13 @@ export class FormFieldOutletComponent implements AfterContentInit {
         tap((status) =>
           status === 'INVALID' ? this.#setError() : this.#clearError(),
         ),
-        tap(() => this.isDirty.set(this.#getControl().dirty || false)),
+        tap(() =>
+          this.isDirty.set(
+            this.#getControl().dirty ||
+              this.#formSchema.formIsSubmitted() ||
+              false,
+          ),
+        ),
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();

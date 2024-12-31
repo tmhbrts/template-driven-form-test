@@ -1,105 +1,170 @@
-<form [formSchema]="teamSchema" (formUpdated)="onFormUpdated($event)">
-  <div class="form" ngModelGroup="team">
-    <mat-form-field>
-      <mat-label>Team Name</mat-label>
-      <input
-        matInput
-        placeholder="Team Name"
-        [ngModel]="teamModel().teamName"
-        name="teamName"
-      />
-    </mat-form-field>
+<form
+  class="form"
+  [formSchema]="teamSchema"
+  (formUpdated)="onFormUpdated($event)"
+  #formSchema="formSchema"
+>
+  <mat-form-field>
+    <mat-label>Team Name</mat-label>
+    <input
+      required
+      matInput
+      [ngModel]="teamModel().teamName"
+      #teamNameRef="ngModel"
+      name="teamName"
+    />
+    <mat-error>{{ getValidationErrorMessage(teamNameRef.errors) }}</mat-error>
+  </mat-form-field>
 
-    <div form-field-outlet>
-      <mat-form-field>
-        <mat-label>Department</mat-label>
-        <mat-select [ngModel]="teamModel().department" name="department">
-          @for (department of departmentOptions; track department) {
-            <mat-option [value]="department">
-              {{ department }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <div form-field-outlet>
-      <mat-form-field>
-        <mat-label>Contract Period</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input
-            [ngModel]="teamModel().contractPeriodStart"
-            name="contractPeriodStart"
-            matStartDate
-            placeholder="Start date"
-          />
-          <input
-            [ngModel]="teamModel().contractPeriodEnd"
-            name="contractPeriodEnd"
-            matEndDate
-            placeholder="End date"
-          />
-        </mat-date-range-input>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-      </mat-form-field>
-    </div>
-
-    <fieldset form-field-outlet>
-      <legend>Required Equipment</legend>
-      <mat-selection-list
-        class="selection-grid"
-        [ngModel]="teamModel().requiredEquipment"
-        name="requiredEquipment"
-      >
-        @for (option of equipmentOptions; track option) {
-          <mat-list-option>{{ option }}</mat-list-option>
-        }
-      </mat-selection-list>
-    </fieldset>
-
-    <fieldset>
-      <legend>Team Members</legend>
-      <button mat-button (click)="addTeamMember()">
-        Add Team Member <mat-icon>add</mat-icon>
-      </button>
-      <div>
-        <div class="form__member-entry">
-          <div form-field-outlet>
-            <mat-form-field>
-              <mat-label>Name</mat-label>
-              <input matInput />
-              @if (false) {
-                <mat-error> Name is required </mat-error>
-              }
-            </mat-form-field>
-          </div>
-          <div field-outlet>
-            <mat-form-field>
-              <mat-label>Age</mat-label>
-              <input matInput type="number" />
-              @if (false) {
-                <mat-error> Age is required </mat-error>
-              }
-              @if (false) {
-                <mat-error> Age not valid </mat-error>
-              }
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-    </fieldset>
-    <button
-      class="form__btn-submit"
-      mat-flat-button
-      type="submit"
-      (click)="submitForm()"
+  <mat-form-field>
+    <mat-label>Department</mat-label>
+    <mat-select
+      required
+      [ngModel]="teamModel().department"
+      #departmentRef="ngModel"
+      name="department"
     >
-      Submit Team
+      @for (department of departmentOptions; track department) {
+        <mat-option [value]="department">
+          {{ department }}
+        </mat-option>
+      }
+    </mat-select>
+    <mat-error>{{ getValidationErrorMessage(departmentRef.errors) }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Contract Period</mat-label>
+    <mat-date-range-input
+      [rangePicker]="picker"
+      ngModelGroup="contractPeriod"
+      #contractPeriodGroupRef="ngModelGroup"
+    >
+      <input
+        required
+        [ngModel]="teamModel().contractPeriod?.start"
+        #contractPeriodStartRef="ngModel"
+        name="start"
+        placeholder="Start date"
+        matStartDate
+      />
+      <input
+        required
+        [ngModel]="teamModel().contractPeriod?.end"
+        #contractPeriodEndRef="ngModel"
+        name="end"
+        placeholder="End date"
+        matEndDate
+      />
+    </mat-date-range-input>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-error>
+      @if (contractPeriodStartRef.errors; as errors) {
+        {{ getValidationErrorMessage(errors) }}
+      }
+      @if (contractPeriodStartRef.errors && contractPeriodEndRef.errors) {
+        {{ " + " }}
+      }
+      @if (contractPeriodEndRef.errors; as errors) {
+        {{ getValidationErrorMessage(errors) }}
+      }
+      @if (contractPeriodGroupRef.errors; as errors) {
+        @for (errorKey of getKeys(errors); track errorKey) {
+          {{ errors[errorKey] }}
+        }
+      }
+    </mat-error>
+  </mat-form-field>
+
+  <fieldset>
+    <legend>Required Equipment</legend>
+    <mat-slide-toggle
+      [checked]="defaultEquipmentOnly()"
+      (change)="toggleDefaultEquipmentOnly($event.checked)"
+    >
+      Default Equipment Only</mat-slide-toggle
+    >
+    <mat-selection-list
+      class="selection-grid"
+      [ngModel]="teamModel().requiredEquipment"
+      #requiredEquipmentRef="ngModel"
+      name="requiredEquipment"
+    >
+      @for (option of equipmentOptions; track option) {
+        <mat-list-option [disabled]="defaultEquipmentOnly()" [value]="option">{{
+          option
+        }}</mat-list-option>
+      }
+    </mat-selection-list>
+
+    @if (
+      (requiredEquipmentRef.control.dirty || formSchema.formIsSubmitted()) &&
+      requiredEquipmentRef.errors
+    ) {
+      <mat-error>
+        {{ getValidationErrorMessage(requiredEquipmentRef.errors) }}
+      </mat-error>
+    }
+  </fieldset>
+
+  <fieldset ngModelGroup="members" #membersRef="ngModelGroup">
+    <legend>Team Members</legend>
+    <button type="button" mat-button (click)="addTeamMember()">
+      Add Team Member <mat-icon>add</mat-icon>
     </button>
-  </div>
+
+    @for (
+      member of objectToArray(teamModel().members || {});
+      track member.key
+    ) {
+      <div class="form__member-entry" [ngModelGroup]="member.key">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            required
+            type="text"
+            name="name"
+            [ngModel]="member.value?.name"
+            #memberNameRef="ngModel"
+          />
+          @if (memberNameRef.errors; as errors) {
+            <mat-error>{{ getValidationErrorMessage(errors) }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Age</mat-label>
+          <input
+            matInput
+            required
+            type="number"
+            name="age"
+            [ngModel]="member.value?.age"
+            #memberAgeRef="ngModel"
+          />
+          @if (memberAgeRef.errors; as errors) {
+            <mat-error>{{ getValidationErrorMessage(errors) }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    }
+    @if (membersRef.errors && formSchema.formIsSubmitted()) {
+      <mat-error>
+        {{ getValidationErrorMessage(membersRef.errors) }}
+      </mat-error>
+    }
+  </fieldset>
+
+  <button
+    class="form__btn-submit"
+    mat-flat-button
+    type="submit"
+    (click)="submitForm()"
+  >
+    Submit Team
+  </button>
 </form>
+<pre><code>{{ teamModel() | json }}</code></pre>

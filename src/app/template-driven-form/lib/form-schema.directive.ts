@@ -28,6 +28,7 @@ type InferInputSignalValue<TSignal> =
 @Directive({
   selector: '[formSchema]',
   standalone: true,
+  exportAs: 'formSchema',
 })
 export class FormSchemaDirective<
   TInput,
@@ -67,7 +68,11 @@ export class FormSchemaDirective<
 
     valueChanges$
       .pipe(
-        switchMap(() => safeParseAsync(this.formSchema(), this.ngForm.value)),
+        switchMap(() =>
+          safeParseAsync(this.formSchema(), this.ngForm.value, {
+            abortPipeEarly: true,
+          }),
+        ),
         tap((result) => this.#reportUnknownIssues(result.issues)),
         tap((result) => this.#reportKnownIssues(result.issues)),
         takeUntilDestroyed(this.#destroyRef),
