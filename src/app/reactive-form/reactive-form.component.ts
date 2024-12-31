@@ -56,7 +56,7 @@ export class ReactiveFormComponent {
   ];
 
   constructor() {
-    this.defaultEquipementOnlyControl.valueChanges
+    this.defaultEquipmentOnlyControl.valueChanges
       .pipe(
         startWith(false),
         tap((value) => {
@@ -102,7 +102,7 @@ export class ReactiveFormComponent {
   departmentControl = this.teamForm.controls.department;
   contractPeriodStartControl = this.teamForm.controls.contractPeriodStart;
   contractPeriodEndControl = this.teamForm.controls.contractPeriodEnd;
-  defaultEquipementOnlyControl = this.teamForm.controls.defaultEquipmentOnly;
+  defaultEquipmentOnlyControl = this.teamForm.controls.defaultEquipmentOnly;
   requiredEquipmentControl = this.teamForm.controls.requiredEquipment;
   membersControl = this.teamForm.controls.members;
 
